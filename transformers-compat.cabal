@@ -145,18 +145,58 @@ test-suite spec
   main-is:              Spec.hs
   other-modules:        GenericsSpec
                         GenericsTypes
+
+                        Control.Monad.Trans.Instances
+                        Data.Functor.Classes.Generic
+                        Data.Functor.Classes.Generic.Internal
+                        Paths_transformers_compat
+
+  hs-source-dirs:       tests src generics
+  ghc-options:          -Wall -threaded -rtsopts
+
   build-depends:        base             >= 4.3  && < 5
+                      , ghc-prim
                       , hspec            >= 2    && < 3
                       , QuickCheck       >= 2    && < 3
                       , tagged           >= 0.7  && < 1
-                      , transformers     >= 0.2  && < 0.6
-                      , transformers-compat
 
   if !impl(ghc >= 8.0)
     build-depends:      generic-deriving >= 1.10 && < 2
+    cpp-options:        -DGENERIC_DERIVING
 
   if flag(four)
-    cpp-options:        -DTRANSFORMERS_FOUR
+    cpp-options: -DTRANSFORMERS_FOUR
+    build-depends: transformers >= 0.4 && < 0.5
+  else
+    if flag(three)
+      hs-source-dirs: 0.3
+      build-depends: transformers >= 0.3 && < 0.4
+      if flag(mtl)
+        build-depends: mtl >= 2.1 && < 2.2
+    else
+      if flag(two)
+        hs-source-dirs: 0.2 0.3
+        build-depends: transformers >= 0.2 && < 0.3
+        if flag(mtl)
+          build-depends: mtl >= 2.0 && < 2.1
+      else
+        build-depends: transformers >= 0.5 && < 0.6
 
-  hs-source-dirs:       tests
-  ghc-options:          -Wall -threaded -rtsopts
+  if flag(mtl)
+    cpp-options: -DMTL
+
+  if !flag(mtl) && !flag(generic-deriving)
+    cpp-options: -DHASKELL98
+
+  if flag(two)
+    other-modules:
+      Control.Applicative.Backwards
+      Control.Applicative.Lift
+      Data.Functor.Reverse
+
+  if flag(two) || flag(three)
+    other-modules:
+      Control.Monad.Trans.Except
+      Control.Monad.Signatures
+      Data.Functor.Classes
+      Data.Functor.Sum
