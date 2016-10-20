@@ -154,7 +154,7 @@ install:
      echo "cabal build-cache MISS";
      rm -rf $HOME/.cabsnap;
      mkdir -p $HOME/.ghc $HOME/.cabal/lib $HOME/.cabal/share $HOME/.cabal/bin;
-     cabal install $OPTS 'hspec >= 2 && < 3' 'tagged >= 0.7 && < 1' 'QuickCheck >= 2 && < 3' -j --only-dependencies;
+     cabal install $OPTS 'hspec >= 2 && < 3' 'tagged >= 0.7 && < 1' 'QuickCheck >= 2 && < 3' -j;
    fi
 
 # snapshot package-db on cache miss
